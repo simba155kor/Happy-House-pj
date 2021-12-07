@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.happyhouse.model.mapper.LocFavorMapper">
+
+	<select id="search" parameterType="String" resultType="Trade">
+		select t.trade_id, t.sigugun, t.house_name, t.deal_type, t.house_type, t.area_size, t.deal_price, t.deal_month, 
+		t.floor, t.construct_year, t.road_addr
+		from trade as t 
+		join locfavor as l
+		on l.trade_id = t.trade_id
+		join member as m
+		on m.member_id = l.member_id
+		where l.member_id =#{memberId};
+	</select>
+	
+	<insert id="create" parameterType="LocFavorDto">
+		insert into locfavor (member_id, trade_id)
+		values (#{memberId}, #{tradeId})
+	</insert>
+	
+	<delete id="remove" parameterType = "LocFavorDto">
+		delete from locfavor
+		where member_id = #{memberId} and trade_id = #{tradeId}
+	</delete>
+	
+</mapper>

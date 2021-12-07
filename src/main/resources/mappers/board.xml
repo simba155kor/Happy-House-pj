@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--	
+	
+	private int boardNo;
+	private String boardTitle;
+	private String boardContent;
+	private String boardRecent;
+	private int boardCnt;
+	private String memberId;
+	-->
+
+<mapper namespace="com.happyhouse.model.mapper.BoardMapper">
+
+	<insert id="writeBoard" parameterType="board">
+		insert into board (member_id, board_title, board_content, board_cnt, board_recent)
+		values (#{memberId}, #{boardTitle}, #{boardContent}, 0, now())
+		
+	</insert>
+
+	<select id="listBoard" parameterType="map" resultType="com.happyhouse.model.Board">
+		select *,
+		case when date_format(board_recent, '%Y%m%d') = date_format(now(), '%Y%m%d')
+				then date_format(board_recent, '%H:%i:%s')
+				else date_format(board_recent, '%y.%m.%d')
+				end board_recent 
+		from board
+		 <if test="word != null and word != ''">
+			<if test="key == 'boardTitle'">
+				where board_title like concat('%', #{word}, '%')
+			</if>
+			<!-- <if test="key != 'boardTitle'">
+				where ${key} = #{word}
+			</if>
+			-->
+			<if test="key == 'boardNo'">
+				where board_no = #{word}
+		 	</if >
+		 	<if test="key == 'memberId'">
+				where member_id  like concat('%', #{word}, '%')
+		 	</if >
+		 	
+		</if>
+		
+		order by board_no DESC
+		limit #{start}, #{spp}
+	</select>
+
+
+	<select id="getTotalCount" parameterType="map" resultType="int">
+		select count(board_no)
+		from board
+		<if test="word != null and word != ''">
+			<if test="key == 'boardTitle'">
+				where subject like concat('%', #{word}, '%')
+			</if>
+			<if test="key != 'boardTitle'">
+				where ${key} = #{word}
+			</if>
+		</if>
+
+
+	</select>
+
+
+	<select id="getBoard" parameterType="int" resultType="com.happyhouse.model.Board"> 
+		select board_no, member_id, board_title, board_content, board_cnt, board_recent
+		from board
+		where board_no = #{boardNo}
+	</select>
+
+	<update id="plusCnt" parameterType="int">
+		update board
+		set board_cnt = board_cnt + 1
+		where board_no = #{boardNo} 
+	</update>
+
+
+	<update id="modifyBoard" parameterType="board">
+		update board
+		set board_title = #{boardTitle}, board_content = #{boardContent}, board_recent = now()
+		where board_no = #{boardNo}
+	</update>
+
+
+	<delete id="deleteBoard" parameterType="int">
+		delete from board
+		where board_no = #{boardNo}
+	</delete>
+
+
+</mapper>

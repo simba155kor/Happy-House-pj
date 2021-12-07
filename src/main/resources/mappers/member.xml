@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.happyhouse.model.mapper.MemberMapper">
+
+	<select id="memberSearch" parameterType="String" resultType="MemberInfoDto">
+		select member_id, member_name, member_email
+		from member
+		where member_id = #{memberId}
+	</select>
+	
+	<select id="memberSearchAll" resultType="ArrayList">
+		select member_id, member_name, member_email
+		from member
+	</select>
+	
+	<update id="memberUpdate" parameterType="MemberDto">
+		update member
+		<trim prefix="set" suffixOverrides=",">
+			<if test="memberHash != null">member_hash = #{memberHash},</if>
+			<if test="memberEmail != null">member_email = #{memberEmail},</if>
+			<if test="memberName != null">member_name = #{memberName},</if>
+		</trim>
+		where member_id = #{memberId}
+	</update>
+	
+	<delete id="memberRemove" parameterType="String">
+		delete from member
+		where member_id = #{memberId}
+	</delete>
+	
+	<insert id="memberCreate" parameterType="MemberDto">
+		insert into member (member_id, member_hash, member_name, member_email)
+		values (#{memberId}, #{memberHash}, #{memberName}, #{memberEmail})
+	</insert>
+	
+	<select id="memberFindPassword" parameterType="MemberFindDto" resultType="MemberInfoDto">
+		select member_id, member_email, member_name
+		from member
+		where member_id = #{memberId}
+	</select>
+	
+	<select id="login" parameterType="MemberLoginHashDto" resultType="String">
+		select member_id
+		from member
+		where member_id = #{memberId} and member_hash = #{memberHash}
+	</select>
+	
+</mapper>

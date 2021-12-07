@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<!--
+private int replyNo;
+	private int boardNo;
+	
+	private String replyContent;
+	private String replyRecent;
+	private String memberId;
+	
+	
+	public List<Reply> listReply(int boardno) throws SQLException;
+	public void writeReply(Reply reply) throws SQLException;
+	public void modifyReply(Reply reply) throws SQLException;
+	
+ -->
+
+<mapper namespace="com.happyhouse.model.mapper.ReplyMapper">
+	
+	<select id="listReply" resultType="com.happyhouse.model.Reply" parameterType = "int">
+		select *
+		from Reply
+		where board_no = #{boardNo} 
+	
+	</select>
+	
+	
+	<insert id="writeReply" parameterType="reply">
+		
+		insert into Reply (board_no,member_id, reply_content, reply_recent)
+		values (#{boardNo},#{memberId},#{replyContent}, now());
+	
+	</insert>
+	
+	<update id="modifyReply" parameterType="com.happyhouse.model.Reply" >
+		update reply
+		set reply_content = #{replyContent},
+			reply_recent = now()
+		where reply_no = #{replyNo}
+	</update>
+	
+	
+	<delete id="deleteReply" parameterType="int">
+		delete from reply
+		where reply_no =  #{replyNo} 
+	</delete >
+
+
+</mapper>

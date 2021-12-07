@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.happyhouse.model.mapper.TradeMapper">
+
+	<select id="searchAll" resultType="com.happyhouse.model.Trade">
+		select *
+		from trade
+	</select>
+	
+	<select id="search" resultType="com.happyhouse.model.Trade" parameterType = "int">
+		select *
+		from trade
+		where trade_id = #{tradeId}
+	</select>
+	
+	<select id="getSido" resultType="sidoGugunCodeDto">
+		select left(sidoCode,2) sidoCode, sidoName
+		from sidocode
+		order by sidoCode
+	</select>
+	
+	<select id="getGugunInSido" parameterType="string" resultType="sidoGugunCodeDto">
+		select left(gugunCode,5) gugunCode, gugunName
+		from guguncode
+		where left(gugunCode,2) = #{sido}
+		order by gugunCode
+	</select>
+	
+	<select id="getDongInGugun" parameterType="string" resultType="GugunDongCodeDto">
+		select distinct dongName, dongCode
+		from dongcode
+		where left(dongCode, 5) = #{gugun}
+		order by dongName
+	</select>
+	
+	<select id="getTradeInDong" parameterType="string" resultType="trade">
+		select *
+		from trade
+		where #{addr} = sigugun 
+	</select>
+	
+</mapper>
